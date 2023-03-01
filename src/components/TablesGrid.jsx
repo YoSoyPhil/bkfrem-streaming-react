@@ -11,21 +11,23 @@ export default function TablesGrid({ playlist, activeTable, setActiveTable }) {
     return () => clearInterval(interval)
   },[])
 
+  console.log(activeTable > 0 ? '8' : '9')
+
   return (
-    <div className='md:grid md:grid-cols-4 2xl:grid-cols-8 md:gap-8 md:mx-44 my-8'>
+    <div className={`grid grid-cols-1 gap-y-2 md:grid-cols-4 ${activeTable > 0 ? '2xl:grid-cols-8' : '2xl:grid-cols-9'} md:gap-8 my-8`}>
       {playlist.map((video, index) => {
         return (
           activeTable !== index + 1 && (
-            <div
-              className='flex flex-col border border-sky-700 bg-sky-800 hover:bg-sky-600 shadow-lg'
+            <div              
+              className='flex md:flex-col border border-wp-blue bg-wp-blue hover:bg-[#0d6fba]'
               onClick={() => setActiveTable(index + 1)}
             >
               <img
                 key={index+timestamp}
                 src={video.image}
-                className='hidden md:flex'
+                className='shadow-lg w-1/2 md:w-auto'
               />
-              <span className='mx-auto my-2 text-sky-200 text-xs uppercase'>
+              <span className='mx-auto my-auto md:my-2 text-blue-50 text-xs uppercase'>
                 Bord {index + 1}
               </span>
             </div>

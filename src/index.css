@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.bg-wp-blue {
+  background: #084574;
+}
+
+.bg-wp-blue-light {
+  background: #0d6fba !important;
+}
+
+.border-wp-blue {
+  border-color: #0d6fba;
+}
+
+.text-wp-blue {
+  color: #084574;
+}
+
+.text-wp-blue-light {
+  color: #0d6fba;
+}

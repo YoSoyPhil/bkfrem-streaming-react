@@ -1,6 +1,6 @@
-import { useState,useEffect } from "react"
-import VideoPlayer from "./VideoPlayer"
-import TablesGrid from "./TablesGrid"
+import { useState, useEffect } from "react"
+import VideoPlayer from "./components/VideoPlayer"
+import TablesGrid from "./components/TablesGrid"
 
 const wowzaServer = "klubben.bk-frem.dk"
 const tables = [1, 2, 3, 4, 5, 7, 8, 9, 10]
@@ -12,14 +12,28 @@ const playlist = tables.map(tableNo => {
 })
 
 function App() {
-  const [activeTable, setActiveTable] = useState(1) // table to view
+  const [activeTable, setActiveTable] = useState() // table to view
+
   useEffect(() => {
-    document.body.classList.add("bg-sky-50")
-    document.body.classList.add("dark:bg-sky-900")
+    document.body.classList.add("bg-wp-blue")
   }, [])
+
   return (
     <div className='App'>
-      <div className='w-2/3 mx-auto'>
+      <div className='mx-2 md:mx-32 lg:mx-36'>
+        <div className='flex flex-col items-center'>
+          <strong>
+            Grundet manglende sikkerhedscertifikat, kan stream kun tilgås pr.
+            HTTP forbindelse (ukrypteret)
+          </strong>
+          <p>
+            Forventes udbedret første uge af marts 2023.
+            <br />
+            <a href='http://bk-frem.dk/streaming'>
+              Gå til midlertidig ukrypteret stream
+            </a>
+          </p>
+        </div>
         <VideoPlayer playlist={playlist} activeTable={activeTable} />
         <TablesGrid
           playlist={playlist}
