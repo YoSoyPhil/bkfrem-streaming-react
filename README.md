@@ -13,7 +13,7 @@ Anvendes til at se live streaming af billard borde i Billardklubben Frem i Koldi
 - [ ] TV skærm mode
 
 ### `Vejledning`
-Disse settings sættes i config.js:
+Disse settings sættes i config.js:\
 Sæt Wowza streaming og webserver adresse ved at redigere `wowzaServer`.\
 Sæt din JWPlayer library fil ved at redigere  `jwtplayerLib`.\
 Indsæt de forskellige muligheder borde ved at redigere variablen `tables`.
