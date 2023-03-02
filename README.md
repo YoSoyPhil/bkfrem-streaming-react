@@ -17,3 +17,12 @@ Disse settings sættes i config.js:\
 Sæt Wowza streaming og webserver adresse ved at redigere `wowzaServer`.\
 Sæt din JWPlayer library fil ved at redigere  `jwtplayerLib`.\
 Indsæt de forskellige muligheder borde ved at redigere variablen `tables`.
+
+Her er et eksempel på config.js:
+```javascript
+module.exports = {
+  jwtplayerLib: "https://cdn.jwplayer.com/libraries/ABCD1234.js",
+  wowzaServer: "videoserver.domæne.dk",
+  tables: [1, 2, 5, 6, 10]
+}
+```

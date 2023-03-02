@@ -1,8 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from "react"
 import JWPlayer from "@jwplayer/jwplayer-react"
 import useWindowSize from "../hooks/useWindowSize"
-
-const jwtplayerLib = "https://cdn.jwplayer.com/libraries/YyGMLFLW.js"
+import { jwplayerLib } from "../config"
 
 export default function VideoGrid({ playlist, activeTable }) {
   const [idle, setIdle] = useState(true)
@@ -78,7 +77,7 @@ export default function VideoGrid({ playlist, activeTable }) {
             <div className='shadow-2xl'>
               <JWPlayer
                 config={configDefaults}
-                library={jwtplayerLib}
+                library={jwplayerLib}
                 autostart={true}
                 playlist={playlist}
                 onError={e => onError(e)}

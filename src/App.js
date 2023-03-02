@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 import VideoPlayer from "./components/VideoPlayer"
 import TablesGrid from "./components/TablesGrid"
+import { wowzaServer, tables } from "./config"
 
-const wowzaServer = "klubben.bk-frem.dk"
-const tables = [1, 2, 3, 4, 5, 7, 8, 9, 10]
 const playlist = tables.map(tableNo => {
   const protocol = window.location.protocol
   const ports = { default: 1935, ssl: 1936 }
