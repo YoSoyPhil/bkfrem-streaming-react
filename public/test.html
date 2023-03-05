@@ -1,0 +1,22 @@
+<html>
+<head>
+  </head>
+<body>
+  <div class='video'>
+    <script type="text/javascript" src=https://cdn.jwplayer.com/libraries/YyGMLFLW.js></script>
+    <script type="text/javascript">
+      jwplayer.key = 'psclttEYmPV5bRZEUu77ZDCDG/3zmF+gbUu4tC3jrdvgouvW7VbjOHbEb0WCucrM';
+    </script>
+    <div id="myElement"></div>
+    <script type="text/javascript">
+      const bordNr = 2;
+      jwplayer("myElement").setup({
+          autostart: "viewable",
+          type : 'hls',
+          image: "https://klubben.bk-frem.dk/tavle"+bordNr+"/bord.jpg",
+          file : "https://klubben.bk-frem.dk:1936/live/bord"+bordNr+".stream_1080p/playlist.m3u8"
+        })
+    </script>
+  </div>
+  </body>
+</html>
