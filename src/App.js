@@ -1,78 +1,94 @@
 import { useState, useEffect } from "react"
-import VideoPlayer from "./components/VideoPlayer"
-import TablesGrid from "./components/TablesGrid"
-import { wowzaServer, tables } from "./config"
+import { wowzaServer, tables, inactiveVideo } from "./config"
+import SingleTable from "./components/SingleTable"
+import SingleTableNav from "./components/SingleTableNav"
 import MultiTables from "./components/MultiTables"
 import MultiTablesNav from "./components/MultiTablesNav"
 
-const playlist = tables.map(tableNo => {
+const tablesFormatted = tables.map(tableNo => {
   const protocol = window.location.protocol
   const ports = { default: 1935, ssl: 1936 }
   const portNumber = protocol === "http:" ? ports.default : ports.ssl
   return {
     table: tableNo,
     type: "hls",
-    file: `${protocol}//${wowzaServer}:${portNumber}/live/bord${tableNo}.stream_1080p/playlist.m3u8`,
+    url: `${protocol}//${wowzaServer}:${portNumber}/live/bord${tableNo}.stream_1080p/tables.m3u8`,
     image: `${protocol}//${wowzaServer}/tavle${tableNo}/bord.jpg`
   }
 })
 
 function App() {
-  const [activeTable, setActiveTable] = useState() // table to view
-  const [multiTables, setMultiTables] = useState([])
+  const [activeTables, setActiveTables] = useState([]) // table to view
   const [streamingTables, setStreamingTables] = useState([])
   const [inactiveTables, setInactiveTables] = useState([])
+  const [streamingTablesChecked, setStreamingTablesChecked] = useState(false)
 
   useEffect(() => {
-    document.body.classList.add("bg-wp-blue")
-    playlist.forEach(async table => {
+    //document.body.classList.add("bg-wp-blue")
+    tablesFormatted.forEach(async table => {
       try {
-        const response = await fetch(table.file)
+        const response = await fetch(table.url)
         switch (response.status) {
           case 200:
-            setStreamingTables(tables => [...tables, table])
+            setStreamingTables(tables =>
+              [...tables, table].filter(
+                (value, index) => [...tables, table].indexOf(value) === index
+              )
+            )
             break
-            default:
-              setInactiveTables(tables => [...tables, table])
-              break
-            }
-          } catch (err) {
-            console.log(err)
-          }
-        })
-      }, [])
+          default:
+            setInactiveTables(tables =>
+              [...tables, table].filter(
+                (value, index) => [...tables, table].indexOf(value) === index
+              )
+            )
+            break
+        }
+        setStreamingTablesChecked(true)
+      } catch (err) {
+        console.log(err)
+      }
+    })
+  }, [])
 
   useEffect(() => {
-    if (activeTable) return
+    console.log(streamingTablesChecked, streamingTables, inactiveVideo)
+    if (streamingTablesChecked && streamingTables && inactiveVideo) {
+      setActiveTables([{ url: inactiveVideo }])
+    }
+  }, [streamingTablesChecked])
+
+  useEffect(() => {
+    if (activeTables.length) return
     if (!streamingTables) return
     if (streamingTables.length)
-      setActiveTable(streamingTables.sort((a, b) => a.table - b.table)[0].table)   
+      setActiveTables([streamingTables.sort((a, b) => a.table - b.table)[0]])
   }, [streamingTables])
-      
+
   return (
     <div className='App'>
-
-      {streamingTables && multiTables && multiTables.length <= 1 ? (
-         <div className='mx-2 md:mx-32 lg:mx-36'>
-         <>
-         <VideoPlayer
-         playlist={playlist}
-         activeTable={activeTable}
-         streamingTables={streamingTables}
-         />
-         <TablesGrid
-         playlist={playlist}
-         activeTable={activeTable}
-         setActiveTable={setActiveTable}
-         />
-         </>
-         </div>
-         ) : (
-           <MultiTables playlist={playlist} multiTables={multiTables} streamingTables={streamingTables} />
-           )
-         }
-        
-        <MultiTablesNav multiTables={multiTables} setMultiTables={setMultiTables} streamingTables={streamingTables} />
+      {activeTables && activeTables.length <= 1 ? (
+        <div className='mx-2 md:mx-32 lg:mx-36'>
+          <SingleTable activeTables={activeTables} />
+          <SingleTableNav
+            tablesFormatted={tablesFormatted}
+            activeTables={activeTables}
+            setActiveTables={setActiveTables}
+            inactiveTables={inactiveTables}
+          />
+        </div>
+      ) : (
+        <MultiTables
+          activeTables={activeTables}
+          setActiveTables={setActiveTables}
+          streamingTables={streamingTables}
+        />
+      )}
+      <MultiTablesNav
+        activeTables={activeTables}
+        setActiveTables={setActiveTables}
+        streamingTables={streamingTables}
+      />
     </div>
   )
 }

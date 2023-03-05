@@ -2,15 +2,11 @@ import { useEffect, useLayoutEffect, useState } from "react"
 import ReactPlayer from "react-player"
 import useWindowSize from "../hooks/useWindowSize"
 
-export default function VideoGrid({
-  playlist,
-  activeTable,
-  multiTable = [],
-  streamingTables
+export default function SingleTable({
+  activeTables
 }) {
   const [idle, setIdle] = useState(true)
   const size = useWindowSize()
-  const [activeUrl, setActiveUrl] = useState(streamingTables[0])
   const [playing, setPlaying] = useState(false)
   const [playerSize, setPlayerSize] = useState({ width: 1280, height: 720 })
   const [playerError, setPlayerError] = useState(false)
@@ -19,11 +15,11 @@ export default function VideoGrid({
     setPlaying(false)
     setTimeout(() => {
       setPlaying(true)
-    }, 500)
+    }, 1000)
   }
 
   useEffect(() => {
-    if (playerError === "hlsError") {
+    if (playerError === "hlsError") { 
       setIdle(true)
     } else {
       retryAttempt()
@@ -31,15 +27,11 @@ export default function VideoGrid({
   }, [playerError])
 
   useEffect(() => {
-    if (!activeTable) return
-    const playlistIndex = playlist.findIndex(
-      video => video.table === activeTable
-    )
+    if (!activeTables.length) return
     setIdle(false)
     setPlayerError(false)
-    setActiveUrl(playlist[playlistIndex].file)
-    ReactPlayer.canPlay(playlist[playlistIndex].file) && setPlaying(true)
-  }, [activeTable])
+    ReactPlayer.canPlay(activeTables[0]?.url) && setPlaying(true)
+  }, [activeTables])
 
   useLayoutEffect(() => {
     const playerWidth = (size.width / 100) * 80
@@ -60,7 +52,7 @@ export default function VideoGrid({
               className='bg-slate-900 flex flex-col justify-center items-center shadow-2xl'
             >
               <span className='text-sky-200 text-xl lg:text-2xl xl:text-4xl'>
-                Der er desværre ikke aktivitet på bord {activeTable}
+                Der er desværre ikke aktivitet på bord {activeTables[0].table}
               </span>
               <span className='text-sky-400 text-lg lg:text-xl xl:text-2xl'>
                 Prøv igen senere eller vælg et andet bord
@@ -85,12 +77,12 @@ export default function VideoGrid({
             </div>
           )
         ) : (
-          activeUrl && (
+          activeTables.length && (
             <div className='shadow-2xl'>
               <div className='flex justify-center mx-auto'>
                 <div className='aspect-video'>
                   <ReactPlayer
-                    url={activeUrl}
+                    url={activeTables[0]?.url}
                     playing={playing}
                     playsinline={true}
                     controls={true}

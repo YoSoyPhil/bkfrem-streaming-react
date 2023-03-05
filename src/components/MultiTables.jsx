@@ -3,9 +3,7 @@ import ReactPlayer from "react-player"
 import useWindowSize from "../hooks/useWindowSize"
 
 export default function MultiTables({
-  playlist,
-  multiTables,
-  streamingTables
+  activeTables
 }) {
   const size = useWindowSize()
   const [playerSize, setPlayerSize] = useState()
@@ -24,8 +22,8 @@ export default function MultiTables({
         className={`grid grid-cols-2 my-auto justify-items-center h-5/6`}
       >
         {playerSize &&
-          multiTables &&
-          multiTables.map(table => (
+          activeTables &&
+          activeTables.map(table => (
             <div className=''>
               <ReactPlayer
                 url={table.file}
