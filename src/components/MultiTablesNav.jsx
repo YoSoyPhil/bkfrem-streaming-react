@@ -14,6 +14,7 @@ export default function MultiTablesNav({
     !screens > 1
       ? setActiveTables([])
       : setActiveTables([...streamingTables.slice(0, screens)])
+    window.scrollTo(0, 0)
   }
 
   const openFullscreen = () => {
