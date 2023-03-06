@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 import ReactPlayer from "react-player"
 import useWindowSize from "../hooks/useWindowSize"
 
@@ -22,11 +22,10 @@ export default function MultiTables({
         className={`grid grid-cols-2 my-auto justify-items-center h-5/6`}
       >
         {playerSize &&
-          activeTables &&
           activeTables.map(table => (
-            <div className=''>
+            <div key={`table-${table.number}-video-container`} className=''>
               <ReactPlayer
-                url={table.file}
+                url={table.url}
                 playing={true}
                 playsinline={true}
                 controls={true}

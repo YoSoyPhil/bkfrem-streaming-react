@@ -21,13 +21,13 @@ export default function SingleTableNav({
       className={`grid grid-cols-1 gap-y-2 md:grid-cols-4 2xl:grid-cols-9 md:gap-8 my-8`}
     >
       {tablesFormatted.map(video => {
-        const { table, image } = video
+        const { number, image } = video
         const isActive = activeTables.includes(video)
         const isNotStreaming = inactiveTables.includes(video)
         return (
           <a
             href={"#"}
-            key={"table-container-" + table + timestamp}
+            key={"table-container-" + number + timestamp}
             className={`flex md:flex-col  border ${
               isActive
                 ? "bg-emerald-900 border-emerald-600"
@@ -36,12 +36,12 @@ export default function SingleTableNav({
             onClick={() => !isActive && setActiveTables([video])}
           >
             <img
-              key={"table-image-" + table + timestamp}
+              key={"table-image-" + number + timestamp}
               src={`${image}?${timestamp}`}
               className='shadow-lg w-1/2 md:w-auto'
             />
             <span className='mx-auto my-auto md:my-2 text-blue-50 text-xs uppercase'>
-              Bord {table}
+              Bord {number}
             </span>
           </a>
         )

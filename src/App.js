@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { wowzaServer, tables, inactiveVideo } from "./config"
+import { wowzaServer, tables, noStreamsVideo } from "./config"
 import SingleTable from "./components/SingleTable"
 import SingleTableNav from "./components/SingleTableNav"
 import MultiTables from "./components/MultiTables"
@@ -10,7 +10,7 @@ const tablesFormatted = tables.map(tableNo => {
   const ports = { default: 1935, ssl: 1936 }
   const portNumber = protocol === "http:" ? ports.default : ports.ssl
   return {
-    table: tableNo,
+    number: tableNo,
     type: "hls",
     url: `${protocol}//${wowzaServer}:${portNumber}/live/bord${tableNo}.stream_1080p/tables.m3u8`,
     image: `${protocol}//${wowzaServer}/tavle${tableNo}/bord.jpg`
@@ -18,33 +18,29 @@ const tablesFormatted = tables.map(tableNo => {
 })
 
 function App() {
-  const [activeTables, setActiveTables] = useState([]) // table to view
+  const [activeTables, setActiveTables] = useState([]) // tables to view
   const [streamingTables, setStreamingTables] = useState([])
   const [inactiveTables, setInactiveTables] = useState([])
-  const [streamingTablesChecked, setStreamingTablesChecked] = useState(false)
 
   useEffect(() => {
-    //document.body.classList.add("bg-wp-blue")
     tablesFormatted.forEach(async table => {
       try {
         const response = await fetch(table.url)
-        switch (response.status) {
-          case 200:
-            setStreamingTables(tables =>
-              [...tables, table].filter(
-                (value, index) => [...tables, table].indexOf(value) === index
-              )
+        response.status === 200
+          ? setStreamingTables(current =>
+              [...current, table]
+                .filter(
+                  (value, index) => [...current, table].indexOf(value) === index
+                )
+                .sort((a, b) => a.table - b.table)
             )
-            break
-          default:
-            setInactiveTables(tables =>
-              [...tables, table].filter(
-                (value, index) => [...tables, table].indexOf(value) === index
-              )
+          : setInactiveTables(current =>
+              [...current, table]
+                .filter(
+                  (value, index) => [...current, table].indexOf(value) === index
+                )
+                .sort((a, b) => a.table - b.table)
             )
-            break
-        }
-        setStreamingTablesChecked(true)
       } catch (err) {
         console.log(err)
       }
@@ -52,18 +48,11 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log(streamingTablesChecked, streamingTables, inactiveVideo)
-    if (streamingTablesChecked && streamingTables && inactiveVideo) {
-      setActiveTables([{ url: inactiveVideo }])
-    }
-  }, [streamingTablesChecked])
-
-  useEffect(() => {
-    if (activeTables.length) return
-    if (!streamingTables) return
-    if (streamingTables.length)
-      setActiveTables([streamingTables.sort((a, b) => a.table - b.table)[0]])
-  }, [streamingTables])
+    if (streamingTables.length + inactiveTables.length !== tables.length) return
+    streamingTables.length
+      ? setActiveTables([streamingTables[0]])
+      : noStreamsVideo && setActiveTables([{ url: noStreamsVideo }])
+  }, [streamingTables, inactiveTables])
 
   return (
     <div className='App'>
@@ -71,6 +60,7 @@ function App() {
         <div className='mx-2 md:mx-32 lg:mx-36'>
           <SingleTable activeTables={activeTables} />
           <SingleTableNav
+            streamingTables={streamingTables}
             tablesFormatted={tablesFormatted}
             activeTables={activeTables}
             setActiveTables={setActiveTables}

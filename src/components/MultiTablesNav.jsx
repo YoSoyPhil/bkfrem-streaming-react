@@ -4,24 +4,11 @@ import { ReactComponent as BackIcon } from "../assets/svg/back.svg"
 import { ReactComponent as FullscreenIcon } from "../assets/svg/fullscreen.svg"
 
 export default function MultiTablesNav({
-  activeTables = [],
+  activeTables,
   setActiveTables,
   streamingTables
 }) {
-  const Button = ({ screens }) => (
-    <button
-      onClick={() => {
-        !screens > 1
-          ? setActiveTables([])
-          : setActiveTables([...streamingTables.slice(0, screens)])
-      }}
-      className='text-wp-blue-light rounded border border-wp-blue p-2'
-    >
-      {screens} skærm{screens > 1 && "e"}
-    </button>
-  )
-
-  const canMultiTable = (streamingTables.length = 1)
+  const canMultiTable = streamingTables.length > 1
 
   const updateActiveTables = screens => {
     !screens > 1
@@ -44,47 +31,45 @@ export default function MultiTablesNav({
 
   return (
     <div className='hidden md:flex flex-col items-center space-y-4 my-4'>
-      <div
-        className={`flex space-x-12`}
-      >
-        <BackIcon
-          className={`fill-current w-24 h-24 ${
-            canMultiTable && activeTables.length > 1
-              ? "text-wp-blue hover:text-sky-600"
-              : "text-gray-300 hover:text-gray-200"
-          }`}
-          onClick={() =>
-            canMultiTable && activeTables.length > 1 && updateActiveTables(1)
-          }
-        />
-        <TwoScreensIcon
-          className={`fill-current w-24 h-24 ${
-            canMultiTable && activeTables.length > 1
-              ? "text-wp-blue hover:text-sky-600"
-              : "text-gray-300 hover:text-gray-200"
-          }`}
-          onClick={() => updateActiveTables(2)}
-        />
-        <FourScreensIcon
-          className={`fill-current w-24 h-24 ${canMultiTable && activeTables.length > 3
-            ? "text-wp-blue hover:text-sky-600"
-            : "text-gray-300 hover:text-gray-200"}`}
-          onClick={() => updateActiveTables(4)}
-        />
-        {activeTables.length >= 1 && (
-          <FullscreenIcon
+      {canMultiTable ? (
+        <div className={`flex space-x-12`}>
+          <BackIcon
             className={`fill-current w-24 h-24 ${
-              canMultiTable && activeTables.length > 1
-              ? "text-wp-blue hover:text-sky-600"
-              : "text-gray-300 hover:text-gray-200"
+              activeTables.length > 1
+                ? "text-wp-blue hover:text-sky-700"
+                : "text-gray-400"
             }`}
-            onClick={() =>
-              canMultiTable && activeTables.length > 1 && openFullscreen()
-            }
+            onClick={() => activeTables.length > 1 && updateActiveTables(1)}
           />
-        )}
-      </div>
-      <div className='text-slate-300'>Multiskærm er under udvikling</div>
+
+          <TwoScreensIcon
+            className={`fill-current w-24 h-24 ${
+              streamingTables.length > 1
+                ? "text-wp-blue hover:text-sky-700"
+                : "text-gray-400"
+            }`}
+            onClick={() => streamingTables.length > 1 && updateActiveTables(2)}
+          />
+
+          <FourScreensIcon
+            className={`fill-current w-24 h-24 ${
+              streamingTables.length > 3
+                ? "text-wp-blue hover:text-sky-700"
+                : "text-gray-400"
+            }`}
+            onClick={() => streamingTables.length > 3 && updateActiveTables(4)}
+          />
+
+          <FullscreenIcon
+            className={`fill-current w-24 h-24 text-wp-blue hover:text-sky-700`}
+            onClick={() => openFullscreen()}
+          />
+        </div>
+      ) : (
+        <div className='text-slate-300'>
+          Multi bordvisning kræver over en aktiv stream
+        </div>
+      )}
     </div>
   )
 }

@@ -21,6 +21,7 @@ Her er et eksempel på config.js:
 ```javascript
 module.exports = {
   wowzaServer: "videoserver.domæne.dk",
-  tables: [1, 2, 5, 6, 10]
+  tables: [1, 2, 5, 6, 10],
+  noStreamsVideo: 'https://example.com/video.mp4'
 }
 ```

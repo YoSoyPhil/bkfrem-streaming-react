@@ -52,7 +52,7 @@ export default function SingleTable({
               className='bg-slate-900 flex flex-col justify-center items-center shadow-2xl'
             >
               <span className='text-sky-200 text-xl lg:text-2xl xl:text-4xl'>
-                Der er desværre ikke aktivitet på bord {activeTables[0].table}
+                Der er desværre ikke aktivitet på bord {activeTables[0].number}
               </span>
               <span className='text-sky-400 text-lg lg:text-xl xl:text-2xl'>
                 Prøv igen senere eller vælg et andet bord
