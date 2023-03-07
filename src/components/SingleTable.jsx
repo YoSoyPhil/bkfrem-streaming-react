@@ -14,23 +14,28 @@ export default function SingleTable({ activeTables }) {
     .slice()
     .sort((a, b) => a.number - b.number)[0]
 
-  const retryAttempt = () => {
+  const retryAttempt = async () => {
     if (!playerError) return
-    retryAttempts < 5
-      ? setTimeout(async () => {
-          console.log(`ATTEMPT #${retryAttempts}`)
-          setRetryAttempts(retryAttempts + 1)
-          try {
-            const req = await fetch(activeTablesFirst?.url)
-            if (req.status === 200) {
-              setIdle(false)
-              setPlaying(true)
-            }
-          } catch (err) {
-            console.log(err)
+    if (retryAttempts === 0) console.log(">>> NO CONNECTION.. TRYING TO RECONNECT:")
+    if (retryAttempts < 5) {
+      setTimeout(async () => {
+        console.log(`ATTEMPT #${retryAttempts+1}`)
+        try {
+          const req = await fetch(activeTablesFirst?.url)
+          if (req.status === 200) {
+            setIdle(false)
+            ReactPlayer.canPlay(activeTablesFirst?.url) && setPlaying(true)
           }
-        }, 1000)
-      : setIdle(true) && setPlaying(false)
+          setRetryAttempts(current => current + 1)
+        } catch (err) {
+          console.log(err)
+        }
+      }, 1000)  
+    } else {
+      setIdle(true)
+      setPlaying(false)
+      console.log(">>> FAILED TO CONNECT TO STREAM AFTER SEVERAL ATTEMPTS")
+    }
   }
 
   useEffect(() => {
@@ -43,8 +48,8 @@ export default function SingleTable({ activeTables }) {
 
   useEffect(() => {
     if (!activeTables.length) return
-    setPlayerError(false)
     setRetryAttempts(0)
+    setPlayerError(false)
     setIdle(false)
     ReactPlayer.canPlay(activeTablesFirst?.url) && setPlaying(true)
   }, [activeTables])
@@ -56,7 +61,7 @@ export default function SingleTable({ activeTables }) {
   }, [size])
 
   return (
-    <div className='flex justify-center md:pt-8 mb-4'>
+    <div className='flex justify-center md:pt-8 md:mb-4'>
       <div className='flex flex-col'>
         {idle ? (
           playerError ? (
@@ -65,12 +70,12 @@ export default function SingleTable({ activeTables }) {
                 width: playerSize.width,
                 height: playerSize.height // undgå mindre højde i TV mode
               }}
-              className='flex flex-col justify-center items-center shadow-2xl greyscale'
+              className='flex flex-col justify-center items-center shadow-lg shadow-sky-900 bg-wp-blue'
             >
-              <span className='text-wp-blue text-xl lg:text-2xl xl:text-4xl'>
+              <span className='text-sky-50 text-xl lg:text-2xl xl:text-4xl'>
                 Ingen aktivitet på bord {activeTables[0].number}
               </span>
-              <span className='text-sky-700 text-lg lg:text-xl xl:text-2xl'>
+              <span className='text-sky-200 text-lg lg:text-xl xl:text-2xl'>
                 Prøv igen senere eller vælg et andet bord
               </span>
             </div>
@@ -80,13 +85,13 @@ export default function SingleTable({ activeTables }) {
                 width: playerSize.width,
                 height: playerSize.height
               }}
-              className='flex justify-center items-center shadow-2xl'
+              className='flex justify-center items-center shadow-lg shadow-sky-900 bg-wp-blue'
             >
               <div className='flex flex-col items-center gap-4'>
-                <span className='text-wp-blue text-xl lg:text-2xl xl:text-4xl'>
+                <span className='text-sky-50 text-xl lg:text-2xl xl:text-4xl'>
                   Velkommen til BK Frem's streaming!
                 </span>
-                <span className='text-sky-600 text-lg lg:text-xl xl:text-2xl'>
+                <span className='text-sky-200 text-lg lg:text-xl xl:text-2xl'>
                   Klik på et bord nedenfor
                 </span>
               </div>
@@ -94,7 +99,7 @@ export default function SingleTable({ activeTables }) {
           )
         ) : (
           activeTables.length && (
-            <div className='shadow-2xl'>
+            <div className='shadow-md shadow-sky-900 mb-0 md:mb-4'>
               <div className='flex justify-center mx-auto'>
                 <div className='aspect-video'>
                   <ReactPlayer
@@ -106,6 +111,7 @@ export default function SingleTable({ activeTables }) {
                     width={playerSize.width}
                     height={playerSize.height}
                     style={{}}
+                    onPlay={() => setPlayerError(false) && setRetryAttempts(0)}
                     onError={error => setPlayerError(error)}
                   />
                 </div>

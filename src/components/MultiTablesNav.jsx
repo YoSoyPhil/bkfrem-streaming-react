@@ -7,7 +7,6 @@ export default function MultiTablesNav({
   activeTables,
   setActiveTables,
   streamingTables,
-  setIsFullscreen,
 }) {
   const canMultiTable = streamingTables.length > 1
 
@@ -29,7 +28,6 @@ export default function MultiTablesNav({
       /* IE11 */
       elem.msRequestFullscreen()
     }
-    setIsFullscreen(true)
   }
 
   return (

@@ -21,7 +21,6 @@ function App() {
   const [activeTables, setActiveTables] = useState([]) // tables to view
   const [streamingTables, setStreamingTables] = useState([])
   const [inactiveTables, setInactiveTables] = useState([])
-  const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
     tablesFormatted.forEach(async table => {
@@ -56,7 +55,7 @@ function App() {
   }, [streamingTables, inactiveTables])
 
   return (
-    <div className='App'>
+    <div className='App h-full bg-sky-900 md:bg-white'>
       {activeTables && activeTables.length <= 1 ? (
         <div className='mx-2 md:mx-32 lg:mx-36'>
           <SingleTable activeTables={activeTables} />
@@ -73,14 +72,12 @@ function App() {
           activeTables={activeTables}
           setActiveTables={setActiveTables}
           streamingTables={streamingTables}
-          isFullscreen={isFullscreen}
         />
       )}
       <MultiTablesNav
         activeTables={activeTables}
         setActiveTables={setActiveTables}
         streamingTables={streamingTables}
-        setIsFullscreen={setIsFullscreen}
       />
     </div>
   )
