@@ -21,6 +21,7 @@ function App() {
   const [activeTables, setActiveTables] = useState([]) // tables to view
   const [streamingTables, setStreamingTables] = useState([])
   const [inactiveTables, setInactiveTables] = useState([])
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
     tablesFormatted.forEach(async table => {
@@ -50,7 +51,7 @@ function App() {
   useEffect(() => {
     if (streamingTables.length + inactiveTables.length !== tables.length) return
     streamingTables.length
-      ? setActiveTables([streamingTables[0]])
+      ? setActiveTables([streamingTables.slice().sort((a, b) => a.number - b.number)[0]])
       : noStreamsVideo && setActiveTables([{ url: noStreamsVideo }])
   }, [streamingTables, inactiveTables])
 
@@ -72,12 +73,14 @@ function App() {
           activeTables={activeTables}
           setActiveTables={setActiveTables}
           streamingTables={streamingTables}
+          isFullscreen={isFullscreen}
         />
       )}
       <MultiTablesNav
         activeTables={activeTables}
         setActiveTables={setActiveTables}
         streamingTables={streamingTables}
+        setIsFullscreen={setIsFullscreen}
       />
     </div>
   )

@@ -6,15 +6,16 @@ import { ReactComponent as FullscreenIcon } from "../assets/svg/fullscreen.svg"
 export default function MultiTablesNav({
   activeTables,
   setActiveTables,
-  streamingTables
+  streamingTables,
+  setIsFullscreen,
 }) {
   const canMultiTable = streamingTables.length > 1
 
-  const updateActiveTables = screens => {
-    !screens > 1
+  const updateActiveTables = tables => {
+    !tables > 1
       ? setActiveTables([])
-      : setActiveTables([...streamingTables.slice(0, screens)])
-    window.scrollTo(0, 0)
+      : setActiveTables([...streamingTables.slice(0, tables)])
+    tables === 2 && window.scrollTo(0, 0)
   }
 
   const openFullscreen = () => {
@@ -28,6 +29,7 @@ export default function MultiTablesNav({
       /* IE11 */
       elem.msRequestFullscreen()
     }
+    setIsFullscreen(true)
   }
 
   return (
@@ -62,7 +64,11 @@ export default function MultiTablesNav({
           />
 
           <FullscreenIcon
-            className={`fill-current w-24 h-24 text-wp-blue hover:text-sky-700`}
+            className={`fill-current w-24 h-24 ${
+              activeTables.length > 1
+                ? "text-wp-blue hover:text-sky-700"
+                : "text-gray-400"
+            }`}
             onClick={() => openFullscreen()}
           />
         </div>
